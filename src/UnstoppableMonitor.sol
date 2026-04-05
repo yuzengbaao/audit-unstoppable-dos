@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {UnstoppableVault, IERC3156FlashBorrower} from "./UnstoppableVault.sol";
+import {UnstoppableVault} from "./UnstoppableVault.sol";
 import {DamnValuableToken} from "./DamnValuableToken.sol";
+import {IERC3156FlashBorrower} from "./IERC3156.sol";
 
-contract UnstoppableMonitor {
+contract UnstoppableMonitor is IERC3156FlashBorrower {
     UnstoppableVault private vault;
     address public owner;
     bool public paused;
@@ -32,7 +33,7 @@ contract UnstoppableMonitor {
         
         address asset = address(vault.asset());
         
-        try vault.flashLoan(this, asset, amount, bytes("")) {
+        try vault.flashLoan(IERC3156FlashBorrower(this), asset, amount, bytes("")) {
             emit FlashLoanStatus(true);
         } catch {
             emit FlashLoanStatus(false);

